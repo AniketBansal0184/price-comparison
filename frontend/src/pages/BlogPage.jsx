@@ -71,17 +71,17 @@ const BlogPage = () => {
                   <BookOpen className="h-4 w-4 mr-2" />
                   Table of Contents
                 </h3>
-                <nav className="space-y-2">
+                <nav className="space-y-2 overflow-x-auto">
                   {rulesAndGuidelines.sections.map((section) => {
                     const Icon = sectionIcons[section.id];
                     return (
                       <Button
                         key={section.id}
                         variant={activeSection === section.id ? 'default' : 'ghost'}
-                        className="w-full justify-start text-sm"
+                        className="w-auto justify-start text-sm"
                         onClick={() => scrollToSection(section.id)}
                       >
-                        <Icon className="h-3 w-3 mr-2" />
+                        <Icon className="h-3 w-3 mr-1" />
                         {section.title}
                       </Button>
                     );
