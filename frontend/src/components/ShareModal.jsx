@@ -25,7 +25,7 @@ const ShareModal = ({ isOpen, onClose, product, url }) => {
 
   const shareUrl = url || `${window.location.origin}/product/${product.id}`;
   const shareTitle = `Check out this amazing deal on ${product.name}!`;
-  const shareText = `Found ${product.name} starting from $${Math.min(...product.stores.map(s => s.price))} on PriceSpy!`;
+  const shareText = `Found ${product.name} starting from $${Math.min(...product.stores.map(s => s.price))} on BeyondSupplySchool!`;
 
   const handleCopyLink = async () => {
     try {

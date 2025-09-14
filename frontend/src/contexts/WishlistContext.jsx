@@ -15,7 +15,7 @@ export const WishlistProvider = ({ children }) => {
 
   // Load wishlist from localStorage on mount
   useEffect(() => {
-    const savedWishlist = localStorage.getItem('pricespy_wishlist');
+    const savedWishlist = localStorage.getItem('BeyondSupplySchool_wishlist');
     if (savedWishlist) {
       try {
         setWishlist(JSON.parse(savedWishlist));
@@ -27,7 +27,7 @@ export const WishlistProvider = ({ children }) => {
 
   // Save wishlist to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('pricespy_wishlist', JSON.stringify(wishlist));
+    localStorage.setItem('BeyondSupplySchool_wishlist', JSON.stringify(wishlist));
   }, [wishlist]);
 
   const addToWishlist = (product) => {

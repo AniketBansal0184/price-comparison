@@ -61,7 +61,7 @@ const Footer = () => {
             <div className="lg:col-span-2 space-y-4">
               <div className="flex items-center">
                 <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 py-1 rounded-lg font-bold text-xl">
-                  PriceSpy
+                  BeyondSupplySchool
                 </div>
               </div>
               <p className="text-gray-400 max-w-md">
@@ -70,11 +70,11 @@ const Footer = () => {
               <div className="space-y-2">
                 <div className="flex items-center text-gray-400">
                   <Mail className="h-4 w-4 mr-2" />
-                  hello@pricespy.com
+                  hello@BeyondSupplySchool.com
                 </div>
                 <div className="flex items-center text-gray-400">
                   <Phone className="h-4 w-4 mr-2" />
-                  1-800-PRICESPY
+                  1-800-BeyondSupplySchool
                 </div>
                 <div className="flex items-center text-gray-400">
                   <MapPin className="h-4 w-4 mr-2" />
@@ -108,7 +108,7 @@ const Footer = () => {
           {/* Bottom Footer */}
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-gray-400 text-sm">
-              © 2025 PriceSpy. All rights reserved.
+              © 2025 BeyondSupplySchool. All rights reserved.
             </div>
             
             <div className="flex items-center space-x-6">

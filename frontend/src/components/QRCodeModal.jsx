@@ -11,7 +11,7 @@ const QRCodeModal = ({ isOpen, onClose, product, store }) => {
   useEffect(() => {
     if (product && store) {
       // Generate affiliate link with UTM parameters and tracking
-      const affiliateLink = `${store.link}?ref=pricespy&utm_source=qr&utm_medium=mobile&utm_campaign=product_${product.id}&product=${encodeURIComponent(product.name)}&store=${encodeURIComponent(store.name)}`;
+      const affiliateLink = `${store.link}?ref=BeyondSupplySchool&utm_source=qr&utm_medium=mobile&utm_campaign=product_${product.id}&product=${encodeURIComponent(product.name)}&store=${encodeURIComponent(store.name)}`;
       setQrValue(affiliateLink);
     }
   }, [product, store]);

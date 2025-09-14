@@ -16,7 +16,7 @@ export const PriceAlertProvider = ({ children }) => {
 
   // Load price alerts from localStorage
   useEffect(() => {
-    const savedAlerts = localStorage.getItem('pricespy_alerts');
+    const savedAlerts = localStorage.getItem('BeyondSupplySchool_alerts');
     if (savedAlerts) {
       try {
         setPriceAlerts(JSON.parse(savedAlerts));
@@ -28,7 +28,7 @@ export const PriceAlertProvider = ({ children }) => {
 
   // Save price alerts to localStorage
   useEffect(() => {
-    localStorage.setItem('pricespy_alerts', JSON.stringify(priceAlerts));
+    localStorage.setItem('BeyondSupplySchool_alerts', JSON.stringify(priceAlerts));
   }, [priceAlerts]);
 
   const createPriceAlert = (productId, productName, targetPrice, email = '') => {
