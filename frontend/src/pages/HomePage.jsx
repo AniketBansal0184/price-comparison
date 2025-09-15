@@ -603,18 +603,18 @@ const HomePage = () => {
               >
                 <div className="relative overflow-hidden">
                   <img
-                    src={post.image || "/fallback-image.jpg"} // fallback if no image
+                    src={post.image} // fallback if no image
                     alt={post.title}
                     className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <Badge className="absolute top-3 left-3 bg-white/90 text-gray-900">
-                    {post.category || "Blog"}
+                    {post.category}
                   </Badge>
                 </div>
                 <CardContent className="p-6 space-y-3">
                   <div className="flex items-center justify-between text-sm text-gray-500">
-                    <span>{post.author || "Admin"}</span>
-                    <span>{post.readTime || "5 min read"}</span>
+                    <span>{post.author}</span>
+                    <span>{post.readTime}</span>
                   </div>
                   <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2">
                     {post.title}

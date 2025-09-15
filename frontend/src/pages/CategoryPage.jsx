@@ -1,11 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { Button } from '../components/ui/button';
-import { Badge } from '../components/ui/badge';
-import { Card, CardContent } from '../components/ui/card';
-import { Grid, List, ArrowUpDown, Filter, Star, TrendingUp } from 'lucide-react';
-import ProductCard from '../components/ProductCard';
-import { getProducts, getCategories } from '../services/api';
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { Button } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
+import { Card, CardContent } from "../components/ui/card";
+import {
+  Grid,
+  List,
+  ArrowUpDown,
+  Filter,
+  Star,
+  TrendingUp,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
+import ProductCard from "../components/ProductCard";
+import { getProducts, getCategories } from "../services/api";
 
 const CategoryPage = () => {
   const { slug } = useParams();
@@ -13,9 +22,10 @@ const CategoryPage = () => {
   const [category, setCategory] = useState(null);
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [selectedSubcategory, setSelectedSubcategory] = useState('');
-  const [sortBy, setSortBy] = useState('relevance');
-  const [viewMode, setViewMode] = useState('grid');
+  const [selectedSubcategory, setSelectedSubcategory] = useState("");
+  const [sortBy, setSortBy] = useState("relevance");
+  const [viewMode, setViewMode] = useState("grid");
+  const [subOpen, setSubOpen] = useState(false);
 
   // Fetch categories and current category
   useEffect(() => {
@@ -23,7 +33,7 @@ const CategoryPage = () => {
       try {
         const cats = await getCategories();
         setCategories(cats);
-        const foundCategory = cats.find(cat => cat.slug === slug);
+        const foundCategory = cats.find((cat) => cat.slug === slug);
         setCategory(foundCategory || null);
 
         if (foundCategory) {
@@ -31,7 +41,7 @@ const CategoryPage = () => {
           setProducts(prods);
         }
       } catch (err) {
-        console.error('Error fetching categories/products:', err);
+        console.error("Error fetching categories/products:", err);
       }
     })();
   }, [slug]);
@@ -44,17 +54,17 @@ const CategoryPage = () => {
 
     // Subcategory filter
     if (selectedSubcategory) {
-      filtered = filtered.filter(product =>
-        product.categories.some(cat => cat.name === selectedSubcategory)
+      filtered = filtered.filter((product) =>
+        product.categories.some((cat) => cat.name === selectedSubcategory)
       );
     }
 
     // Sorting
     switch (sortBy) {
-      case 'price-low':
+      case "price-low":
         filtered.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
         break;
-      case 'price-high':
+      case "price-high":
         filtered.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
         break;
       // Add more sorting logic if needed
@@ -90,7 +100,8 @@ const CategoryPage = () => {
               {category.name}
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Compare prices on the best {category.name.toLowerCase()} products from top brands and retailers.
+              Compare prices on the best {category.name.toLowerCase()} products
+              from top brands and retailers.
             </p>
             <div className="flex items-center justify-center space-x-6 text-sm text-gray-600">
               <div className="flex items-center">
@@ -119,44 +130,77 @@ const CategoryPage = () => {
 
                 {/* Subcategories */}
                 <div className="space-y-3">
-                  <h4 className="font-medium text-gray-700">Subcategories</h4>
-                  <div className="space-y-2">
-                    <Button
-                      variant={!selectedSubcategory ? 'default' : 'ghost'}
-                      className="w-full justify-start text-sm"
-                      onClick={() => setSelectedSubcategory('')}
-                    >
-                      All {category.name}
-                    </Button>
-                    {category.subcategories?.map((subcategory) => (
+                  <Button
+                    variant="ghost"
+                    className="flex items-center justify-between w-full"
+                    onClick={() => setSubOpen(!subOpen)}
+                  >
+                    <span>Subcategories</span>
+                    {subOpen ? (
+                      <ChevronUp className="w-4 h-4" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4" />
+                    )}
+                  </Button>
+
+                  {subOpen && (
+                    <div className="flex flex-col mt-2 space-y-2">
                       <Button
-                        key={subcategory.id}
-                        variant={selectedSubcategory === subcategory.name ? 'default' : 'ghost'}
+                        variant={!selectedSubcategory ? "default" : "ghost"}
                         className="w-full justify-start text-sm"
-                        onClick={() => setSelectedSubcategory(
-                          selectedSubcategory === subcategory.name ? '' : subcategory.name
-                        )}
+                        onClick={() => setSelectedSubcategory("")}
                       >
-                        {subcategory.name}
+                        All {category.name}
                       </Button>
-                    ))}
-                  </div>
+                      {(category.subcategories || []).map((subcategory) => (
+                        <Button
+                          key={subcategory.id}
+                          variant={
+                            selectedSubcategory === subcategory.name
+                              ? "default"
+                              : "ghost"
+                          }
+                          className="w-full justify-start text-sm"
+                          onClick={() =>
+                            setSelectedSubcategory(
+                              selectedSubcategory === subcategory.name
+                                ? ""
+                                : subcategory.name
+                            )
+                          }
+                        >
+                          {subcategory.name}
+                        </Button>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Quick Filters */}
                 <div className="space-y-3">
                   <h4 className="font-medium text-gray-700">Quick Filters</h4>
                   <div className="space-y-2">
-                    <Button variant="ghost" className="w-full justify-start text-sm">
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start text-sm"
+                    >
                       <Star className="h-3 w-3 mr-2 text-yellow-400 fill-current" />
                       Top Rated (4.5+)
                     </Button>
-                    <Button variant="ghost" className="w-full justify-start text-sm">
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start text-sm"
+                    >
                       <TrendingUp className="h-3 w-3 mr-2 text-blue-500" />
                       Best Sellers
                     </Button>
-                    <Button variant="ghost" className="w-full justify-start text-sm">
-                      <Badge variant="secondary" className="mr-2 text-xs">Sale</Badge>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start text-sm"
+                    >
+                      <Badge variant="secondary" className="mr-2 text-xs">
+                        Sale
+                      </Badge>
                       On Sale
                     </Button>
                   </div>
@@ -198,17 +242,17 @@ const CategoryPage = () => {
                 {/* View Mode */}
                 <div className="flex items-center border border-gray-300 rounded-lg">
                   <Button
-                    variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                    variant={viewMode === "grid" ? "default" : "ghost"}
                     size="sm"
-                    onClick={() => setViewMode('grid')}
+                    onClick={() => setViewMode("grid")}
                     className="rounded-r-none"
                   >
                     <Grid className="h-4 w-4" />
                   </Button>
                   <Button
-                    variant={viewMode === 'list' ? 'default' : 'ghost'}
+                    variant={viewMode === "list" ? "default" : "ghost"}
                     size="sm"
-                    onClick={() => setViewMode('list')}
+                    onClick={() => setViewMode("list")}
                     className="rounded-l-none"
                   >
                     <List className="h-4 w-4" />
@@ -220,10 +264,10 @@ const CategoryPage = () => {
             {/* Active Filters */}
             {selectedSubcategory && (
               <div className="flex flex-wrap gap-2 mb-6">
-                <Badge 
-                  variant="secondary" 
+                <Badge
+                  variant="secondary"
                   className="bg-blue-100 text-blue-700 cursor-pointer hover:bg-blue-200"
-                  onClick={() => setSelectedSubcategory('')}
+                  onClick={() => setSelectedSubcategory("")}
                 >
                   {selectedSubcategory} ✕
                 </Badge>
@@ -231,19 +275,51 @@ const CategoryPage = () => {
             )}
 
             {/* Products Grid/List */}
+            {/* Products Grid/List */}
             {filteredProducts.length > 0 ? (
-              <div className={
-                viewMode === 'grid' 
-                  ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'
-                  : 'space-y-6'
-              }>
-                {filteredProducts.map((product) => (
-                  <ProductCard 
-                    key={product.id} 
-                    product={product}
-                    className={viewMode === 'list' ? 'w-full' : ''}
-                  />
-                ))}
+              <div className="relative">
+                {/* Slider Controls */}
+                <div className="flex justify-end mb-2 space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      document
+                        .getElementById("products-slider")
+                        ?.scrollBy({ left: -300, behavior: "smooth" })
+                    }
+                    className="hidden sm:flex"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      document
+                        .getElementById("products-slider")
+                        ?.scrollBy({ left: 300, behavior: "smooth" })
+                    }
+                    className="hidden sm:flex"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                {/* Horizontal Scrollable Products */}
+                <div
+                  id="products-slider"
+                  className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide"
+                  style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+                >
+                  {filteredProducts.map((product) => (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      className="flex-none w-64" // fixed width for horizontal scrolling
+                    />
+                  ))}
+                </div>
               </div>
             ) : (
               <div className="text-center py-12">
@@ -256,9 +332,9 @@ const CategoryPage = () => {
                 <p className="text-gray-600 mb-4">
                   Try adjusting your filter criteria
                 </p>
-                <Button 
-                  variant="outline" 
-                  onClick={() => setSelectedSubcategory('')}
+                <Button
+                  variant="outline"
+                  onClick={() => setSelectedSubcategory("")}
                 >
                   Clear Filters
                 </Button>
