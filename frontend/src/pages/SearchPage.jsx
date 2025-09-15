@@ -14,7 +14,7 @@ import {
   ArrowUpDown
 } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
-import { products, categories } from '../data/mock';
+import { getProducts, getCategories } from "../services/api";
 
 const SearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -26,6 +26,17 @@ const SearchPage = () => {
   const [viewMode, setViewMode] = useState('grid');
   const [showFilters, setShowFilters] = useState(false);
 
+    useEffect(() => {
+    (async () => {
+      try {
+        const cats = await getCategories();
+        setCategories(cats);
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+      }
+    })();
+  }, []);
+  
   useEffect(() => {
     const query = searchParams.get('q') || '';
     setSearchQuery(query);

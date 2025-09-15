@@ -12,7 +12,8 @@ import {
   TrendingUp
 } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
-import { products, categories } from '../data/mock';
+import { getProducts, getCategories } from '../services/api';
+
 
 const CategoryPage = () => {
   const { slug } = useParams();
@@ -23,16 +24,16 @@ const CategoryPage = () => {
   const [viewMode, setViewMode] = useState('grid');
 
   useEffect(() => {
-    // Find category by slug
-    const foundCategory = categories.find(cat => cat.slug === slug);
-    if (foundCategory) {
-      setCategory(foundCategory);
-      // Filter products by category
-      const categoryProducts = products.filter(product => 
-        product.category.toLowerCase() === foundCategory.name.toLowerCase()
-      );
-      setFilteredProducts(categoryProducts);
-    }
+    (async () => {
+      try {
+        const cats = await getCategories();
+        setCategories(cats);
+        const foundCategory = cats.find(cat => cat.slug === slug);
+        setCategory(foundCategory || null);
+      } catch (err) {
+        console.error('Error fetching categories:', err);
+      }
+    })();
   }, [slug]);
 
   useEffect(() => {
