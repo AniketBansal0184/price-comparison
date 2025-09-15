@@ -3,26 +3,21 @@ import { useParams } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Card, CardContent } from '../components/ui/card';
-import { 
-  Grid, 
-  List, 
-  ArrowUpDown, 
-  Filter,
-  Star,
-  TrendingUp
-} from 'lucide-react';
+import { Grid, List, ArrowUpDown, Filter, Star, TrendingUp } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { getProducts, getCategories } from '../services/api';
 
-
 const CategoryPage = () => {
   const { slug } = useParams();
+  const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState(null);
+  const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedSubcategory, setSelectedSubcategory] = useState('');
   const [sortBy, setSortBy] = useState('relevance');
   const [viewMode, setViewMode] = useState('grid');
 
+  // Fetch categories and current category
   useEffect(() => {
     (async () => {
       try {
@@ -30,61 +25,50 @@ const CategoryPage = () => {
         setCategories(cats);
         const foundCategory = cats.find(cat => cat.slug === slug);
         setCategory(foundCategory || null);
+
+        if (foundCategory) {
+          const prods = await getProducts(foundCategory.id);
+          setProducts(prods);
+        }
       } catch (err) {
-        console.error('Error fetching categories:', err);
+        console.error('Error fetching categories/products:', err);
       }
     })();
   }, [slug]);
 
+  // Filter products by subcategory and sort
   useEffect(() => {
-    if (category) {
-      let filtered = products.filter(product => 
-        product.category.toLowerCase() === category.name.toLowerCase()
+    if (!category || products.length === 0) return;
+
+    let filtered = [...products];
+
+    // Subcategory filter
+    if (selectedSubcategory) {
+      filtered = filtered.filter(product =>
+        product.categories.some(cat => cat.name === selectedSubcategory)
       );
-
-      // Subcategory filter
-      if (selectedSubcategory) {
-        filtered = filtered.filter(product => 
-          product.subcategory.toLowerCase() === selectedSubcategory.toLowerCase()
-        );
-      }
-
-      // Sort products
-      switch (sortBy) {
-        case 'price-low':
-          filtered.sort((a, b) => {
-            const priceA = Math.min(...a.stores.map(store => store.price));
-            const priceB = Math.min(...b.stores.map(store => store.price));
-            return priceA - priceB;
-          });
-          break;
-        case 'price-high':
-          filtered.sort((a, b) => {
-            const priceA = Math.min(...a.stores.map(store => store.price));
-            const priceB = Math.min(...b.stores.map(store => store.price));
-            return priceB - priceA;
-          });
-          break;
-        case 'rating':
-          filtered.sort((a, b) => b.rating - a.rating);
-          break;
-        case 'reviews':
-          filtered.sort((a, b) => b.reviewCount - a.reviewCount);
-          break;
-        default:
-          break;
-      }
-
-      setFilteredProducts(filtered);
     }
-  }, [category, selectedSubcategory, sortBy]);
+
+    // Sorting
+    switch (sortBy) {
+      case 'price-low':
+        filtered.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+        break;
+      case 'price-high':
+        filtered.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+        break;
+      // Add more sorting logic if needed
+      default:
+        break;
+    }
+
+    setFilteredProducts(filtered);
+  }, [category, products, selectedSubcategory, sortBy]);
 
   if (!category) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900">Category not found</h2>
-        </div>
+        <h2 className="text-2xl font-bold text-gray-900">Category not found</h2>
       </div>
     );
   }

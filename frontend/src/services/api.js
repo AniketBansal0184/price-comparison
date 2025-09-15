@@ -61,17 +61,26 @@ export const getProducts = async (category_id = "", per_page = 20) => {
 // Fetch WordPress posts/blogs
 export const getBlogs = async (per_page = 5) => {
   try {
-    const { data } = await axios.get(`${WP_BASE}/posts`, { params: { per_page } });
-    return data.map(post => ({
+    const { data } = await axios.get(`${WP_BASE}/posts`, {
+      params: { per_page, _embed: true },
+    });
+
+    return data.map((post) => ({
       id: post.id,
       title: post.title.rendered,
       excerpt: post.excerpt.rendered,
       content: post.content.rendered,
-      image: post.featured_media || "",
+      // Get featured image URL if exists
+      image:
+        post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "",
       link: post.link,
+      category:
+        post._embedded?.["wp:term"]?.[0]?.[0]?.name || "Blog",
+      author: post._embedded?.author?.[0]?.name || "Admin",
     }));
   } catch (err) {
     console.error("WP posts error:", err.message);
     return [];
   }
 };
+

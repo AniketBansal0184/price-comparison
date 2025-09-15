@@ -599,10 +599,11 @@ const HomePage = () => {
               <Card
                 key={post.id}
                 className="group cursor-pointer border-0 shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
+                onClick={() => window.open(post.link, "_blank")} // open WP post
               >
                 <div className="relative overflow-hidden">
                   <img
-                    src={post.image || ""}
+                    src={post.image || "/fallback-image.jpg"} // fallback if no image
                     alt={post.title}
                     className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                   />
